@@ -1,26 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_printf_others.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mumutlu <mumutlu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/31 18:45:42 by mumutlu           #+#    #+#             */
-/*   Updated: 2023/07/31 18:45:43 by mumutlu          ###   ########.fr       */
+/*   Created: 2023/07/31 18:45:29 by mumutlu           #+#    #+#             */
+/*   Updated: 2023/07/31 18:45:31 by mumutlu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "ft_printf.h"
 
-# include <unistd.h>
+int	base(unsigned long long int k, char x)
+{
+	int	i;
+	int	tmp;
 
-int	ft_putchar(char c);
-int	ft_putstr(char *s);
-int	ft_putnbr(int nb);
-int	ft_putnbr_unsigned(unsigned int nb);
-int	base(unsigned long long int k, char x);
-int	ft_strlen(const char *s);
-int	ft_printf(const char *s, ...);
-
-#endif
+	i = 0;
+	if (k > 15)
+	{
+		tmp = base(k / 16, x);
+		if (tmp == -1)
+			return (-1);
+		i += tmp;
+	}
+	if (k % 16 < 10)
+	{
+		if (ft_putchar((k % 16) + '0') == -1)
+			return (-1);
+	}
+	else if (ft_putchar((k % 16) + x) == -1)
+		return (-1);
+	return (++i);
+}

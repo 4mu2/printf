@@ -5,82 +5,84 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mumutlu <mumutlu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/16 16:25:48 by mumutlu           #+#    #+#             */
-/*   Updated: 2023/02/16 16:25:48 by mumutlu          ###   ########.fr       */
+/*   Created: 2023/07/31 18:45:34 by mumutlu           #+#    #+#             */
+/*   Updated: 2023/07/31 18:45:35 by mumutlu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_int(int a)
+int	ft_putchar(char c)
 {
-	int	ret;
-
-	ret = 0;
-	if (a == 0)
-		return (write(1, "0", 1));
-	if (a == -2147483648)
-		return (write(1, "-2147483648", 11));
-	if (a < 0)
-	{
-		ret += write(1, "-", 1);
-		a *= -1;
-	}
-	if (a >= 10)
-		ret += ft_int(a / 10);
-	write(1, &"0123456789"[a % 10], 1);
-	return (ret + 1);
+	return (write(1, &c, 1));
 }
 
-int	ft_hex(unsigned int a, char c)
-{
-	int	ret;
-
-	ret = 0;
-	if (a >= 16)
-		ret += ft_hex(a / 16, c);
-	if (c == 'X')
-		write(1, &"0123456789ABCDEF"[a % 16], 1);
-	if (c == 'x')
-		write(1, &"0123456789abcdef"[a % 16], 1);
-	return (ret + 1);
-}
-
-int	ft_point(unsigned long a, int sign)
-{
-	int	ret;
-
-	ret = 0;
-	if (sign == 1)
-	{
-		ret += write(1, "0x", 2);
-		sign = 0;
-	}
-	if (a >= 16)
-		ret += ft_point(a / 16, 0);
-	write(1, &"0123456789abcdef"[a % 16], 1);
-	return (ret + 1);
-}
-
-int	ft_string(char *str)
+int	ft_strlen(const char *s)
 {
 	int	i;
 
-	i = -1;
-	if (!str)
-		return (write(1, "(null)", 6));
-	while (str[++i])
-		write(1, &str[i], 1);
+	i = 0;
+	while (s[i] != '\0')
+		i++;
 	return (i);
 }
 
-int	ft_unsigned(unsigned int a)
+int	ft_putstr(char *s)
 {
-	int	ret;
+	if (!s)
+		s = "(null)";
+	if (write(1, s, ft_strlen(s)) == -1)
+		return (-1);
+	return (ft_strlen(s));
+}
 
-	ret = 0;
-	if (a >= 10)
-		ret += ft_unsigned(a / 10);
-	write(1, &"0123456789"[a % 10], 1);
-	return (ret + 1);
+int	ft_putnbr(int nb)
+{
+	long	n;
+	int		i;
+	int		tmp;
+
+	i = 0;
+	n = nb;
+	if (nb < 0)
+	{
+		if (write(1, "-", 1) == -1)
+			return (-1);
+		n = -n;
+		i++;
+	}
+	if (n > 9)
+	{
+		tmp = ft_putnbr(n / 10);
+		if (tmp == -1)
+			return (-1);
+		i += tmp;
+	}
+	if (ft_putchar(n % 10 + 48) == -1)
+		return (-1);
+	return (++i);
+}
+
+int	ft_putnbr_unsigned(unsigned int nb)
+{
+	int	i;
+	int	tmp;
+
+	i = 0;
+	if (nb > 9)
+	{
+		tmp = ft_putnbr_unsigned(nb / 10);
+		if (tmp == -1)
+			return (-1);
+		i += tmp + 1;
+		if (ft_putnbr_unsigned(nb % 10) == -1)
+			return (-1);
+	}
+	else
+	{
+		if (ft_putchar(nb + 48) == -1)
+			return (-1);
+		i++;
+	}
+	return (i);
 }

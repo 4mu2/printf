@@ -1,29 +1,27 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mumutlu <mumutlu@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/02/16 16:26:19 by mumutlu           #+#    #+#              #
-#    Updated: 2023/02/16 16:26:19 by mumutlu          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = libftprintf.a
-FLAG = -Wall -Wextra -Werror
-SRC = $(shell find . -name "ft_*.c")
+LIBC = ar rcs
+SRCS = ft_printf.c ft_printf_utils.c ft_printf_others.c  \
+       
+OBJS = ${SRCS:.c=.o}
+CC = cc
+RM = rm -f
+CFLAGS = -Wall -Wextra -Werror
 
-all: $(NAME)
+.c.o:
+	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
-$(NAME):
-	gcc $(FLAG) -c $(SRC)
-	ar rc $(NAME) *.o
+${NAME}: ${OBJS}
+	${LIBC} ${NAME} ${OBJS}
+
+all: ${NAME}
+
 clean:
-	/bin/rm -f  *.o
+	${RM} ${OBJS}
+
 fclean: clean
-	/bin/rm -f $(NAME)
+	${RM} ${NAME}
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re
+.PHONY : all clean fclean re
+
